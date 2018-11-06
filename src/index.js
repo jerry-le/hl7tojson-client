@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './bootstrap.css';
+import './custom_style.css'
 import {map} from 'underscore';
 
 const message_data = {
@@ -821,6 +822,7 @@ function SegmentsName(props) {
                 key={idx}
                 data-key={idx}
                 onClick={props.onClick}
+                className="ml-1 mb-1"
             >
                 {each}
             </button>
@@ -837,8 +839,14 @@ function SegmentsName(props) {
 
 function FieldsDetail(props) {
     let rows = props.currentSegment.fields.map(function (field, idx) {
+        console.log(props);
         return (
-            <div key={idx} className="row">
+            <div
+                key={idx}
+                data-key={idx}
+                onClick={props.onClick}
+                className="row row-hover"
+            >
                 <div className="col-lg-2">{field.id}</div>
                 <div className="col-lg-5">{field.description}</div>
                 <div className="col-lg-5">{field.data}</div>
@@ -849,9 +857,9 @@ function FieldsDetail(props) {
         <div className="col-sm-12 col-lg-6 shadow-sm p-3 mb-5 bg-white rounded">
             <h5>Fields</h5>
             <div className="row">
-                <div className="col-lg-2">Field #</div>
-                <div className="col-lg-5">Field description</div>
-                <div className="col-lg-5">Field data</div>
+                <div className="col-lg-2"><strong>Field #</strong></div>
+                <div className="col-lg-5"><strong>Field description</strong></div>
+                <div className="col-lg-5"><strong>Field data</strong></div>
             </div>
             {rows}
         </div>
@@ -861,10 +869,15 @@ function FieldsDetail(props) {
 function RepetitionsDetail(props) {
     let repetitions = props.currentField.repetitions.map(function (repetition, idx) {
         return (
-            <div key={idx} className="row">
-                <div className="col-lg-2">#</div>
-                <div className="col-lg-5">{idx + 1}</div>
-                <div className="col-lg-5">{repetition.data}</div>
+            <div
+                key={idx}
+                data-key={idx}
+                onClick={props.onClick}
+                className="row row-hover"
+            >
+                <div className="col-lg-2">{props.currentField.id}</div>
+                <div className="col-lg-4">{idx + 1}</div>
+                <div className="col-lg-6">{repetition.data}</div>
             </div>
         );
     });
@@ -872,9 +885,9 @@ function RepetitionsDetail(props) {
         <div className="col-sm-12 col-lg-6 shadow-sm p-3 mb-5 bg-white rounded">
             <h5>Repetitions</h5>
             <div className="row">
-                <div className="col-lg-2">Field #</div>
-                <div className="col-lg-5">Repetition #</div>
-                <div className="col-lg-5">Repetition data</div>
+                <div className="col-lg-2"><strong>Field #</strong></div>
+                <div className="col-lg-4"><strong>Repetition #</strong></div>
+                <div className="col-lg-6"><strong>Repetition data</strong></div>
             </div>
             {repetitions}
         </div>
@@ -882,31 +895,53 @@ function RepetitionsDetail(props) {
 }
 
 function ComponentsDetail(props) {
+    let components = null;
+    if (props.currentRepetition) {
+        components = props.currentRepetition.components.map(function (component, idx) {
+            return (
+                <div className="row row-hover">
+                    <div className="col-lg-2">{component.id}</div>
+                    <div className="col-lg-5">{component.description}</div>
+                    <div className="col-lg-5">{component.data}</div>
+                </div>
+            )
+        })
+    }
     return (
         <div className="col-sm-12 col-lg-6 shadow-sm p-3 mb-5 bg-white rounded">
             <h5>Components</h5>
             <div className="row">
-                <div className="col-lg-2">#</div>
-                <div className="col-lg-5">Component description</div>
-                <div className="col-lg-5">Component data</div>
+                <div className="col-lg-2"><strong>#</strong></div>
+                <div className="col-lg-5"><strong>Component description</strong></div>
+                <div className="col-lg-5"><strong>Component data</strong></div>
             </div>
-            {props.value}
+            {components}
         </div>
     )
 }
 
 function SegmentsDetail(props) {
+    let currentSegment = props.value[props.currentSegment];
+    let currentField = currentSegment['fields'][props.currentField];
+    let currentRepetition =
+        'repetitions' in currentField
+            ? currentField['repetitions'][props.currentRepetition]
+            : null;
+    console.log(currentRepetition);
     return (
         <div className="col-sm-9 col-lg-10">
             <div className="row">
                 <FieldsDetail
-                    currentSegment={props.value[props.currentSegment]}
+                    currentSegment={currentSegment}
+                    onClick={props.onFieldClick}
                 />
                 <RepetitionsDetail
-                    currentField={props.value[props.currentSegment]['fields'][props.currentField]}
+                    currentField={currentField}
+                    onClick={props.onRepetitionClick}
                 />
                 <ComponentsDetail
                     value='abc'
+                    currentRepetition={currentRepetition}
                 />
             </div>
         </div>
@@ -928,6 +963,23 @@ function MessageDetail(props) {
                 value={props.value}
                 currentSegment={props.currentSegment}
                 currentField={props.currentField}
+                currentRepetition={props.currentRepetition}
+                onFieldClick={props.onFieldClick}
+                onRepetitionClick={props.onRepetitionClick}
+            />
+        </div>
+    )
+}
+
+
+function TextAreaMessage(props) {
+    return (
+        <div
+            className="row shadow-sm p-3 mb-5 bg-white rounded"
+        >
+            <textarea
+                className="x-text-area"
+                placeholder='Paste your HL7 message here...'
             />
         </div>
     )
@@ -936,7 +988,7 @@ function MessageDetail(props) {
 class App extends React.Component {
     constructor(props) {
         super(props);
-        this.lorem = 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.';
+        this.lorem = 'HL7 parser';
         this.message = message_data;
         this.state = {
             message: message_data,
@@ -949,8 +1001,25 @@ class App extends React.Component {
 
     handleSegmentClick(e) {
         this.setState({
-            currentSegment: Number(e.target.getAttribute('data-key'))
+            currentSegment: Number(e.target.getAttribute('data-key')),
+            currentField: 0,
+            currentRepetition: 0,
         });
+    }
+
+    handleFieldClick(e) {
+        console.log(e);
+        this.setState({
+            currentField: Number(e.target.parentElement.getAttribute('data-key')),
+            currentRepetition: 0,
+        });
+    }
+
+    handleRepetitionClick(e) {
+        console.log(e);
+        this.setState({
+            currentRepetition: Number(e.target.parentElement.getAttribute('data-key')),
+        })
     }
 
     renderMessageInfo(message_info) {
@@ -966,8 +1035,18 @@ class App extends React.Component {
             <MessageDetail
                 value={message_detail}
                 currentSegment={this.state.currentSegment}
-                onSegmentClick={this.handleSegmentClick.bind(this)}
                 currentField={this.state.currentField}
+                currentRepetition={this.state.currentRepetition}
+                onSegmentClick={this.handleSegmentClick.bind(this)}
+                onFieldClick={this.handleFieldClick.bind(this)}
+                onRepetitionClick={this.handleRepetitionClick.bind(this)}
+            />
+        )
+    }
+
+    renderTextAreaMessage() {
+        return (
+            <TextAreaMessage
             />
         )
     }
@@ -975,7 +1054,9 @@ class App extends React.Component {
     renderHeader() {
         return (
             <header className="row shadow-sm p-3 mb-5 bg-white rounded">
-                {this.lorem}
+                <h1>
+                    {this.lorem}
+                </h1>
             </header>
         )
     }
@@ -984,6 +1065,7 @@ class App extends React.Component {
         return (
             <div className='container-fluid'>
                 {this.renderHeader()}
+                {this.renderTextAreaMessage()}
                 {this.renderMessageInfo(this.state.message['info'])}
                 {this.renderMessageDetail(this.state.message['segments'])}
             </div>
