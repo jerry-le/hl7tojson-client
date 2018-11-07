@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import './bootstrap.css';
 import './custom_style.css'
 import {map} from 'underscore';
+import axios from 'axios';
 
 const message_data = {
     "info": {
@@ -839,7 +840,6 @@ function SegmentsName(props) {
 
 function FieldsDetail(props) {
     let rows = props.currentSegment.fields.map(function (field, idx) {
-        console.log(props);
         return (
             <div
                 key={idx}
@@ -927,7 +927,6 @@ function SegmentsDetail(props) {
         'repetitions' in currentField
             ? currentField['repetitions'][props.currentRepetition]
             : null;
-    console.log(currentRepetition);
     return (
         <div className="col-sm-9 col-lg-10">
             <div className="row">
@@ -971,16 +970,18 @@ function MessageDetail(props) {
     )
 }
 
-
 function TextAreaMessage(props) {
     return (
         <div
             className="row shadow-sm p-3 mb-5 bg-white rounded"
         >
+            <div className="alert-danger">{props.error}</div>
             <textarea
+                id="hl7-text-area"
                 className="x-text-area"
                 placeholder='Paste your HL7 message here...'
             />
+            <button onClick={props.onClick}>Parse</button>
         </div>
     )
 }
@@ -995,7 +996,8 @@ class App extends React.Component {
             currentSegment: 0,
             currentField: 0,
             currentRepetition: 0,
-            currentComponent: 0
+            currentComponent: 0,
+            error: null,
         }
     }
 
@@ -1008,7 +1010,6 @@ class App extends React.Component {
     }
 
     handleFieldClick(e) {
-        console.log(e);
         this.setState({
             currentField: Number(e.target.parentElement.getAttribute('data-key')),
             currentRepetition: 0,
@@ -1016,10 +1017,32 @@ class App extends React.Component {
     }
 
     handleRepetitionClick(e) {
-        console.log(e);
         this.setState({
             currentRepetition: Number(e.target.parentElement.getAttribute('data-key')),
         })
+    }
+
+    handleParseClick(e) {
+        let message = document.getElementById("hl7-text-area").value;
+        let self = this;
+        axios.post('http://localhost:5003/messages', {
+            message: message
+        }).then(function (response) {
+            self.setState({
+                message: response.data,
+                error: null
+            })
+        }).catch(function (data) {
+            let error = null;
+            if (!data.response) {
+                error = "Cannot connect to server"
+            } else {
+                error = data.response.data.error
+            }
+            self.setState({
+                error: error || "Unknown error"
+            })
+        });
     }
 
     renderMessageInfo(message_info) {
@@ -1047,6 +1070,8 @@ class App extends React.Component {
     renderTextAreaMessage() {
         return (
             <TextAreaMessage
+                onClick={this.handleParseClick.bind(this)}
+                error={this.state.error}
             />
         )
     }
