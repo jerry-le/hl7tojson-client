@@ -799,9 +799,9 @@ const message_data = {
 
 function MessageInfo(props) {
     return (
-        <div className='row shadow-sm p-3 mb-5 bg-white rounded'>
-            <h5>Message info</h5>
+        <div className='card row shadow-sm p-3 mb-3 bg-white rounded'>
             <div className="col-sm-12">
+            <h4 className="text-success">Message Info</h4>
                 <div>
                     Message version: {props.value.message_version}
                 </div>
@@ -819,77 +819,98 @@ function MessageInfo(props) {
 function SegmentsName(props) {
     let names = props.value.map(function (each, idx) {
         return (
-            <button
-                key={idx}
-                data-key={idx}
-                onClick={props.onClick}
-                className="ml-1 mb-1"
-            >
-                {each}
-            </button>
+          <table className="table table-hover mb-0">
+            <tbody>
+              <tr
+                  key={idx}
+                  data-key={idx}
+                  onClick={props.onClick}
+              >
+                <td className="text-center">
+                  {each}
+                </td>
+              </tr>
+            </tbody>
+          </table>
         )
     });
     return (
-        <div className="col-sm-3 col-lg-2 shadow-sm p-3 mb-5 bg-white rounded">
-            <h5>Segments</h5>
+        <div className="col-lg-2 px-2">
+          <div className="card shadow-sm p-3 mb-2 bg-white">
+            <h4 className="text-center text-success mb-4">Segments</h4>
             <br/>
             {names}
+          </div>
         </div>
     )
 }
-
 function FieldsDetail(props) {
     let rows = props.currentSegment.fields.map(function (field, idx) {
         return (
-            <div
+          <tbody>
+            <tr
                 key={idx}
                 data-key={idx}
                 onClick={props.onClick}
-                className="row row-hover"
+
             >
-                <div className="col-lg-2">{field.id}</div>
-                <div className="col-lg-5">{field.description}</div>
-                <div className="col-lg-5">{field.data}</div>
-            </div>
+                <td>{field.id}</td>
+                <td>{field.description}</td>
+                <td>{field.data}</td>
+            </tr>
+          </tbody>
         )
     });
     return (
-        <div className="col-sm-12 col-lg-6 shadow-sm p-3 mb-5 bg-white rounded">
-            <h5>Fields</h5>
-            <div className="row">
-                <div className="col-lg-2"><strong>Field #</strong></div>
-                <div className="col-lg-5"><strong>Field description</strong></div>
-                <div className="col-lg-5"><strong>Field data</strong></div>
-            </div>
-            {rows}
+      <div className="col-lg-7 px-2">
+        <div className="card shadow-sm p-3 mb-2 bg-white">
+          <h4 className="text-success mb-5">Fields</h4>
+          <table className="table table-hover">
+            <thead>
+              <tr>
+                <th  className="text-left">Field #</th>
+                <th>Field description</th>
+                <th>Field data</th>
+              </tr>
+            </thead>
+              {rows}
+          </table>
         </div>
+      </div>
     )
 }
-
 function RepetitionsDetail(props) {
     let repetitions = props.currentField.repetitions.map(function (repetition, idx) {
         return (
-            <div
-                key={idx}
-                data-key={idx}
-                onClick={props.onClick}
-                className="row row-hover"
-            >
-                <div className="col-lg-2">{props.currentField.id}</div>
-                <div className="col-lg-4">{idx + 1}</div>
-                <div className="col-lg-6">{repetition.data}</div>
-            </div>
+            <tbody>
+                <tr
+                    key={idx}
+                    data-key={idx}
+                    onClick={props.onClick}
+
+                >
+                    <td>{props.currentField.id}</td>
+                    <td>{idx + 1}</td>
+                    <td>{repetition.data}</td>
+                </tr>
+            </tbody>
         );
     });
     return (
-        <div className="col-sm-12 col-lg-6 shadow-sm p-3 mb-5 bg-white rounded">
-            <h5>Repetitions</h5>
-            <div className="row">
-                <div className="col-lg-2"><strong>Field #</strong></div>
-                <div className="col-lg-4"><strong>Repetition #</strong></div>
-                <div className="col-lg-6"><strong>Repetition data</strong></div>
-            </div>
-            {repetitions}
+        <div className="col-lg-5 px-2">
+          <div className="card  shadow-sm p-3 bg-white">
+            <h4 className="text-success mb-5">Repetitions</h4>
+            <table className="table table-hover">
+                <thead>
+                    <tr>
+                        <th><strong>Field #</strong></th>
+                        <th><strong>Repetition #</strong></th>
+                        <th><strong>Repetition data</strong></th>
+                    </tr>
+                </thead>
+                {repetitions}
+            </table>
+          </div>
         </div>
     )
 }
@@ -899,23 +920,31 @@ function ComponentsDetail(props) {
     if (props.currentRepetition) {
         components = props.currentRepetition.components.map(function (component, idx) {
             return (
-                <div className="row row-hover">
-                    <div className="col-lg-2">{component.id}</div>
-                    <div className="col-lg-5">{component.description}</div>
-                    <div className="col-lg-5">{component.data}</div>
-                </div>
+              <tbody>
+                <tr>
+                    <td>{component.id}</td>
+                    <td>{component.description}</td>
+                    <td>{component.data}</td>
+                </tr>
+              </tbody>
             )
         })
     }
     return (
-        <div className="col-sm-12 col-lg-6 shadow-sm p-3 mb-5 bg-white rounded">
-            <h5>Components</h5>
-            <div className="row">
-                <div className="col-lg-2"><strong>#</strong></div>
-                <div className="col-lg-5"><strong>Component description</strong></div>
-                <div className="col-lg-5"><strong>Component data</strong></div>
-            </div>
-            {components}
+        <div className="col-lg-7 px-2">
+          <div className="card  shadow-sm p-3 bg-white">
+            <h4 className="text-success mb-5">Components</h4>
+            <table className="table table-hover">
+              <thead>
+                <tr>
+                    <th><strong>#</strong></th>
+                    <th><strong>Component description</strong></th>
+                    <th><strong>Component data</strong></th>
+                </tr>
+              </thead>
+              {components}
+            </table>
+          </div>
         </div>
     )
 }
@@ -928,7 +957,7 @@ function SegmentsDetail(props) {
             ? currentField['repetitions'][props.currentRepetition]
             : null;
     return (
-        <div className="col-sm-9 col-lg-10">
+        <div className="col-lg-10">
             <div className="row">
                 <FieldsDetail
                     currentSegment={currentSegment}
@@ -973,15 +1002,16 @@ function MessageDetail(props) {
 function TextAreaMessage(props) {
     return (
         <div
-            className="row shadow-sm p-3 mb-5 bg-white rounded"
+            className="row shadow-sm p-3 my-3 bg-white rounded"
         >
             <div className="alert-danger">{props.error}</div>
             <textarea
                 id="hl7-text-area"
                 className="x-text-area"
                 placeholder='Paste your HL7 message here...'
-            />
-            <button onClick={props.onClick}>Parse</button>
+            >
+            </textarea>
+            <button className="btn btn-success btn-lg mt-1" onClick={props.onClick}>Parse</button>
         </div>
     )
 }
@@ -989,7 +1019,7 @@ function TextAreaMessage(props) {
 class App extends React.Component {
     constructor(props) {
         super(props);
-        this.lorem = 'HL7 parser';
+        this.lorem = 'HL7 Parser';
         this.message = message_data;
         this.state = {
             message: message_data,
@@ -1003,7 +1033,7 @@ class App extends React.Component {
 
     handleSegmentClick(e) {
         this.setState({
-            currentSegment: Number(e.target.getAttribute('data-key')),
+            currentSegment: Number(e.target.parentElement.getAttribute('data-key')),
             currentField: 0,
             currentRepetition: 0,
         });
@@ -1078,7 +1108,7 @@ class App extends React.Component {
 
     renderHeader() {
         return (
-            <header className="row shadow-sm p-3 mb-5 bg-white rounded">
+            <header className="row shadow-sm p-3 mb-2 bg-success text-white rounded">
                 <h1>
                     {this.lorem}
                 </h1>
