@@ -1035,7 +1035,7 @@ class App extends React.Component {
 
     handleSegmentClick(e) {
         this.setState({
-            currentSegment: Number(e.target.getAttribute('data-key')),
+            currentSegment: Number(e.target.parentElement.getAttribute('data-key')),
             currentField: 0,
             currentRepetition: 0,
         });
