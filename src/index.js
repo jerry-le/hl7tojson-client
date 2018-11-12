@@ -799,17 +799,17 @@ const message_data = {
 
 function MessageInfo(props) {
     return (
-        <div className='card row shadow-sm p-3 mb-3 bg-white rounded'>
-            <div className="col-sm-12">
-            <h4 className="text-success">Message Info</h4>
+        <div className="col-sm-12 px-3">
+            <div className='card row shadow-sm px-3 py-4 mb-3 bg-white rounded'>
+            <h4 className="text-success">Message Information</h4>
                 <div>
-                    Message version: {props.value.message_version}
+                    Message Version: {props.value.message_version}
                 </div>
                 <div>
-                    Message type: {props.value.message_type}
+                    Message Type: {props.value.message_type}
                 </div>
                 <div>
-                    Message description: {props.value.message_description}
+                    Message Description: {props.value.message_description}
                 </div>
             </div>
         </div>
@@ -835,7 +835,7 @@ function SegmentsName(props) {
         )
     });
     return (
-        <div className="col-lg-2 px-2">
+        <div className="col-lg-2 pr-2 pl-3">
           <div className="card shadow-sm p-3 mb-2 bg-white">
             <h4 className="text-center text-success mb-4">Segments</h4>
             <br/>
@@ -863,14 +863,14 @@ function FieldsDetail(props) {
     });
     return (
       <div className="col-lg-7 px-2">
-        <div className="card shadow-sm p-3 mb-2 bg-white">
+        <div className="card shadow-sm p-3 mb-3 bg-white">
           <h4 className="text-success mb-5">Fields</h4>
           <table className="table table-hover">
             <thead>
               <tr>
                 <th  className="text-left">Field #</th>
-                <th>Field description</th>
-                <th>Field data</th>
+                <th>Field Description</th>
+                <th>Field Data</th>
               </tr>
             </thead>
               {rows}
@@ -897,7 +897,7 @@ function RepetitionsDetail(props) {
         );
     });
     return (
-        <div className="col-lg-5 px-2">
+        <div className="col-lg-5 pl-2 pr-3">
           <div className="card  shadow-sm p-3 bg-white">
             <h4 className="text-success mb-5">Repetitions</h4>
             <table className="table table-hover">
@@ -905,7 +905,7 @@ function RepetitionsDetail(props) {
                     <tr>
                         <th><strong>Field #</strong></th>
                         <th><strong>Repetition #</strong></th>
-                        <th><strong>Repetition data</strong></th>
+                        <th><strong>Repetition Data</strong></th>
                     </tr>
                 </thead>
                 {repetitions}
@@ -938,8 +938,8 @@ function ComponentsDetail(props) {
               <thead>
                 <tr>
                     <th><strong>#</strong></th>
-                    <th><strong>Component description</strong></th>
-                    <th><strong>Component data</strong></th>
+                    <th><strong>Component Description</strong></th>
+                    <th><strong>Component Data</strong></th>
                 </tr>
               </thead>
               {components}
@@ -1001,17 +1001,19 @@ function MessageDetail(props) {
 
 function TextAreaMessage(props) {
     return (
-        <div
-            className="row shadow-sm p-3 my-3 bg-white rounded"
-        >
-            <div className="alert-danger">{props.error}</div>
-            <textarea
-                id="hl7-text-area"
-                className="x-text-area"
-                placeholder='Paste your HL7 message here...'
-            >
-            </textarea>
-            <button className="btn btn-success btn-lg mt-1" onClick={props.onClick}>Parse</button>
+        <div className="row my-3">
+            <div className="col-lg-12 bg-white rounded">
+                <div className="card">
+                    <div className="alert-danger">{props.error}</div>
+                    <textarea
+                        id="hl7-text-area"
+                        className="x-text-area"
+                        placeholder='Paste your HL7 message here...'
+                    >
+                    </textarea>
+                </div>
+                <button className="btn btn-success btn-lg mt-1" onClick={props.onClick}>Parse</button>
+            </div>
         </div>
     )
 }
@@ -1033,7 +1035,7 @@ class App extends React.Component {
 
     handleSegmentClick(e) {
         this.setState({
-            currentSegment: Number(e.target.parentElement.getAttribute('data-key')),
+            currentSegment: Number(e.target.getAttribute('data-key')),
             currentField: 0,
             currentRepetition: 0,
         });
@@ -1108,17 +1110,17 @@ class App extends React.Component {
 
     renderHeader() {
         return (
-            <header className="row shadow-sm p-3 mb-2 bg-success text-white rounded">
-                <h1>
+            <header className="row shadow-sm p-3 mb-2 bg-success text-white">
+                <h3>
                     {this.lorem}
-                </h1>
+                </h3>
             </header>
         )
     }
 
     render() {
         return (
-            <div className='container-fluid'>
+            <div className='container-fluid mb-4'>
                 {this.renderHeader()}
                 {this.renderTextAreaMessage()}
                 {this.renderMessageInfo(this.state.message['info'])}
